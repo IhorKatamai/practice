@@ -68,7 +68,7 @@ function addNewUser() {
     user.firstName = document.getElementById("firstName").value;
     user.lastName = document.getElementById("lastName").value;
     var d = new Date();
-    user.createdDate = `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear() - 2000}`
+    user.createdDate = `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear().toString().slice(-2)}`
     user.position = document.getElementById("position").value;
     DATA.push(user);
     document.getElementById('dataTable').remove();
