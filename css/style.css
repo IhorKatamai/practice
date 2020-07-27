@@ -1,3 +1,19 @@
 .modal {
     background-color: rgba(0, 0, 0, 0.4);
 }
+
+.page-size-select {
+    width: 75px;
+}
+
+.my-custom-table {
+    width: 65%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 60px auto;
+}
+
+.disabled {
+    pointer-events: none;
+}
