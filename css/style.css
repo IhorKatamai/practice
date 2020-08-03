@@ -17,3 +17,25 @@
 .disabled {
     pointer-events: none;
 }
+
+th {
+    position: relative;
+}
+
+.sort-btn {
+    position: absolute;
+    right: 5px;
+    border: none;
+    background-color: #fff;
+    color: #ccc;
+}
+.sort-btn:hover {
+    color: rgb(75, 74, 74);
+}
+.sort-btn:focus {
+    outline: none; 
+}
+
+.sorted.sort-btn {
+    color: rgb(75, 74, 74);
+}

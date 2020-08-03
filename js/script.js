@@ -1,5 +1,5 @@
 (()=>{
-    const DATA = [
+    const data = [
     {
         id: 1,
         firstName: 'Petro',
@@ -79,7 +79,7 @@
     },
     ];
 
-    const TableData = { 
+    const tableData = { 
         keys: [
         { key: 'id', visible: true }, 
         { key: 'firstName', visible: true }, 
@@ -87,23 +87,44 @@
         { key: 'createdDate', visible: true }, 
         { key: 'position', visible: true } 
         ], 
+        sort: {
+            column: null,
+            order: null
+        },
         pageSize: 5, 
-        currentPage: 1 
+        currentPage: 1,
+        getData() {
+            let _data;
+            if (this.sort.order != null) {
+                _data = data.slice().sort(sortByColumnAndOrder(this.sort.column, this.sort.order));
+            }
+            else {
+                _data = data.slice();
+            }
+            return _data.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
+        }
     };
-
+    
     const tableWrap = document.getElementById('table-wrap');
-    let TABLE_EL;
+    let tableEl;
     createPagination();
     createTable();
     populateTable();
     document.querySelector('.custom-select').onchange = changePageSize;
     
     document.querySelectorAll('.page-item').forEach(function(element) {
-        element.onclick = setPage;
+        element.addEventListener('click', setPage);
     })
 
+    function sortByColumnAndOrder(column, order) {
+        if (order == 'asc') {
+            return (a, b) => a[column] > b[column] ? 1 : -1;
+        }
+        return (a, b) => a[column] < b[column] ? 1 : -1;
+    }
+
     function setPage() {
-        TableData.currentPage = this.dataset.page;
+        tableData.currentPage = this.dataset.page;
         refreshTable();
     }
     
@@ -113,33 +134,82 @@
         let pagesHTML = '';
         const numberOfPages = caclNumberOfPages();
         for (let i = 1; i <= numberOfPages; i++) {
-            pagesHTML += `<li class="page-item ${TableData.currentPage == i ? 'disabled': ''}" data-page="${i}"><a class="page-link" href="#">${i}</a></li>`;
+            pagesHTML += `<li class="page-item ${tableData.currentPage == i ? 'disabled': ''}" data-page="${i}"><a class="page-link" href="#">${i}</a></li>`;
         }
         pagination.children[0].innerHTML = pagesHTML;
         document.querySelectorAll('.page-item').forEach(function(element) {
-            element.onclick = setPage;
+            element.addEventListener('click', setPage);
         })
     }
     
     function caclNumberOfPages() {
-        return Math.ceil(DATA.length/TableData.pageSize);
+        return Math.ceil(data.length/tableData.pageSize);
     }
     
     function createTable() {
         document.querySelector('#table-wrap').innerHTML='<table id="dataTable" class="table table-bordered mt-3"><thead><tr></tr></thead><tbody></tbody></table>';
-        TABLE_EL = document.getElementById('dataTable');
-        const tr = TABLE_EL.tHead.children[0];
-    
-        for (const key of TableData.keys.filter(item => item.visible)) {
-            tr.insertCell().outerHTML = `<th>${key.key.toUpperCase()}</th>`;
+        tableEl = document.getElementById('dataTable');
+        const tr = tableEl.tHead.children[0];
+        for (const key of tableData.keys.filter(item => item.visible)) {
+            tr.insertCell().outerHTML = `<th>
+            ${key.key.toUpperCase()}<button class="sort-btn ${tableData.sort.column == key.key && tableData.sort.order != null ? ' sorted': ''}" data-column="${key.key}">
+            <i class="fas ${getSortIcon(key.key)}"></i></button></th>`;
         }
+        document.querySelectorAll('.sort-btn').forEach(function(element) {
+            element.addEventListener('click', setSortData);
+        });
+    }
+
+    function refreshHeader() {
+        document.querySelectorAll('.sort-btn').forEach(function(element) {
+            element.classList.remove('sorted');
+            if (tableData.sort.column == element.dataset.column && tableData.sort.order != null) {
+                element.classList.add('sorted');
+            }
+            element.innerHTML = `<i class="fas ${getSortIcon(element.dataset.column)}"></i>`;
+        });
+    }
+
+    function getSortIcon(column) {
+        if (column == tableData.sort.column) {
+            if (tableData.sort.order == null) {
+                return 'fa-arrows-alt-v';
+            } else
+            if (tableData.sort.order == 'desc') {
+                return 'fa-sort-alpha-up';
+            } else
+            if (tableData.sort.order == 'asc') {
+                return 'fa-sort-alpha-down';
+            }
+        }
+        return 'fa-arrows-alt-v';
+    }
+
+    function setSortData() {
+        if (tableData.sort.column == this.dataset.column) {
+            if (tableData.sort.order == null) {
+                tableData.sort.order = 'asc';
+            } else
+            if (tableData.sort.order == 'asc') {
+                tableData.sort.order = 'desc';
+            } else
+            if (tableData.sort.order == 'desc') {
+                tableData.sort.order = null;
+            }
+        } 
+        else {
+            tableData.sort.order = 'asc';
+        }
+        tableData.sort.column = this.dataset.column;
+        refreshHeader();
+        refreshTable();
     }
     
     function populateTable() {
-        const dataArr = getPaginatedData();
-        const visibleColumns = TableData.keys.filter(item => item.visible);
+        const dataArr = tableData.getData();
+        const visibleColumns = tableData.keys.filter(item => item.visible);
         for (let i = 0; i < dataArr.length; i++) {
-            const newRow = TABLE_EL.getElementsByTagName('tbody')[0].insertRow();
+            const newRow = tableEl.getElementsByTagName('tbody')[0].insertRow();
             for (const key of visibleColumns) {
                 const newCell = newRow.insertCell();
                 const newText = document.createTextNode(dataArr[i][key.key]);
@@ -148,18 +218,14 @@
         }
     }
     
-    function getPaginatedData() {
-        return DATA.slice((TableData.currentPage - 1) * TableData.pageSize, TableData.currentPage * TableData.pageSize);
-    }
-    
     function changePageSize() {
-        TableData.pageSize = this.value;
-        TableData.currentPage = 1;
+        tableData.pageSize = this.value;
+        tableData.currentPage = 1;
         refreshTable();
     }
     
     function refreshTable() {
-        TABLE_EL.getElementsByTagName('tbody')[0].innerHTML = '';
+        tableEl.getElementsByTagName('tbody')[0].innerHTML = '';
         document.querySelector('.pagination-wrap').remove();
         createPagination();
         populateTable();
@@ -167,13 +233,14 @@
     
     function addNewUser() {
         const user = {id:'', firstName:'', lastName:'', createdDate:'', position:''};
-        user.id = DATA.length + 1;
+        user.id = data.length + 1;
         user.firstName = document.getElementById("firstName").value;
         user.lastName = document.getElementById("lastName").value;
         const currentDate = new Date();
         user.createdDate = `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear().toString().slice(-2)}`;
         user.position = document.getElementById("position").value;
-        DATA.push(user);
+        data.push(user);
+        tableData.getData();
         refreshTable();
     }
     
