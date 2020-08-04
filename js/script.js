@@ -152,7 +152,6 @@
         tableEl = document.getElementById('dataTable');
         const tr = tableEl.tHead.children[0];
         for (const key of tableData.keys.filter(item => item.visible)) {
-            /// Перевірка щоб не було сортування кнопок
             if (key.key == 'operate') {
                 tr.insertCell().outerHTML = `<th class="pr-4">${key.key.toUpperCase()}</th>`;
             }
@@ -219,7 +218,6 @@
             const newRow = tableEl.getElementsByTagName('tbody')[0].insertRow();
             for (const key of visibleColumns) {
                 const newCell = newRow.insertCell();
-                /// Заповнення кнопок
                 if (key.key == 'operate') {
                     newCell.innerHTML = `<button type="button" class="btn btn-secondary mr-2" value="${dataArr[i]['id']}">Edit</button><button type="button" class="btn btn-danger" value="${dataArr[i]['id']}">Delete</button>`;
                 } 
