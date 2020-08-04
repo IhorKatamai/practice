@@ -7,11 +7,12 @@
 }
 
 .my-custom-table {
+    position: relative;
     width: 65%;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin: 60px auto;
+    margin: 100px auto;
 }
 
 .disabled {
@@ -38,4 +39,36 @@ th {
 
 .sorted.sort-btn {
     color: rgb(75, 74, 74);
+}
+
+.filter-panel {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdown-menu.dropdown-filter {
+    width: 200px;
+    left: -140px;
+}
+
+.dropdown-menu.dropdown-filter.show {
+    display: block;
+}
+
+.btn.dropdown-filter-btn {
+    color: #007bff;
+}
+
+.alert.custom-alert {
+    position: fixed;
+    top: 45px;
+    left: calc(50% - 420px);
+    width: 840px;
+    animation-name: slide;
+    animation-duration: 1s;
+}
+
+@keyframes slide {
+    from {top: 0px;}
+    to {top: 45px;}
 }

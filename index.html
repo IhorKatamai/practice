@@ -53,15 +53,63 @@
       </div>
     </div>
     <div class="my-custom-table">
-      <div class="page-size-select">
-        <select class="browser-default custom-select">
-          <option value="" disabled selected>Size</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-        </select>
+      <div class="filter-panel">
+        <div class="page-size-select">
+          <select class="browser-default custom-select">
+            <option value="" disabled selected>Size</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-filter"></i>
+          </button>
+          <div class="dropdown-menu dropdown-filter">
+            <div class="dropdown-item form-check pl-5">
+              <input class="form-check-input filter-check" type="checkbox" value="id" id="columnId" checked>
+              <label class="form-check-label" for="columnId">
+                id
+              </label>
+            </div>
+            <div class="dropdown-item form-check pl-5">
+              <input class="form-check-input filter-check" type="checkbox" value="firstName" id="columnFirstName" checked>
+              <label class="form-check-label" for="columnFirstName">
+                firstName
+              </label>
+            </div>
+            <div class="dropdown-item form-check pl-5">
+              <input class="form-check-input filter-check" type="checkbox" value="lastName" id="columnlastName" checked>
+              <label class="form-check-label" for="columnlastName">
+                lastName
+              </label>
+            </div>
+            <div class="dropdown-item form-check pl-5">
+              <input class="form-check-input filter-check" type="checkbox" value="createdDate" id="columnCreatedDate" checked>
+              <label class="form-check-label" for="columnCreatedDate">
+                createdDate
+              </label>
+            </div>
+            <div class="dropdown-item form-check pl-5">
+              <input class="form-check-input filter-check" type="checkbox" value="position" id="columnPosition" checked>
+              <label class="form-check-label" for="columnPosition">
+                position
+              </label>
+            </div>
+            <div class="dropdown-item form-check pl-5">
+              <input class="form-check-input filter-check" type="checkbox" value="operate" id="columnOperate" checked>
+              <label class="form-check-label" for="columnOperate">
+                operate
+              </label>
+            </div>
+            <div class="dropdown-divider"></div>
+            <button id="check-all-btn" class="btn dropdown-filter-btn ml-2">All</button>
+            <button id="check-none-btn" class="btn dropdown-filter-btn ml-2">Clear</button>
+            <button id="start-filter-btn" class="btn dropdown-filter-btn ml-2">Ok</button>
+          </div>
+        </div>
       </div>
-
       <div id="table-wrap">
       </div>
       <div class="text-center">

@@ -1,77 +1,77 @@
 (()=>{
     const data = [
     {
-        id: 1,
+        id: 1596541016200,
         firstName: 'Petro',
         lastName: 'Boyko',
         createdDate: '10/20/20',
         position: 'HR'
     },
     {
-        id: 2,
+        id: 1596541016202,
         firstName: 'Julia',
         lastName: 'Kornuta',
         createdDate: '1/1/20',
         position: 'Back-end Developer'
     },
     {
-        id: 3,
+        id: 1596541016205,
         firstName: 'Eduard',
         lastName: 'Sobotnyk',
         createdDate: '5/15/20',
         position: 'Full Stack Developer'
     },
     {
-        id: 4,
+        id: 1596541016209,
         firstName: 'Ihor',
         lastName: 'Shynkarchuk',
         createdDate: '2/2/20',
         position: 'Front-end Developer'
     },
     {
-        id: 5,
+        id: 1596541016214,
         firstName: 'Volodia',
         lastName: 'Torkoniak',
         createdDate: '3/3/20',
         position: 'Back-end Developer'
     },
     {
-        id: 6,
+        id: 1596541016220,
         firstName: 'Olia',
         lastName: 'Yakubiak',
         createdDate: '9/9/20',
         position: 'Full Stack Developer'
     },
     {
-        id: 7,
+        id: 1596541016227,
         firstName: 'Mykhailo',
         lastName: 'Shevchenko',
         createdDate: '10/10/20',
         position: 'HR'
     },
     {
-        id: 8,
+        id: 1596541016235,
         firstName: 'Vasyl',
         lastName: 'Soloveiko',
         createdDate: '1/1/20',
         position: 'Back-end Developer'
     },
     {
-        id: 9,
+        id: 1596541016249,
         firstName: 'Artem',
         lastName: 'Bilyi',
         createdDate: '5/15/20',
         position: 'Full Stack Developer'
     },
     {
-        id: 10,
+        id: 1596541016259,
         firstName: 'Dmytro',
         lastName: 'Honta',
         createdDate: '1/11/20',
         position: 'Back-end Developer'
     },
     {
-        id: 11,
+        id: 1596541016270,
         firstName: 'Ivan',
         lastName: 'Sirko',
         createdDate: '5/15/20',
@@ -85,7 +85,8 @@
         { key: 'firstName', visible: true }, 
         { key: 'lastName', visible: true }, 
         { key: 'createdDate', visible: true }, 
-        { key: 'position', visible: true } 
+        { key: 'position', visible: true },
+        { key: 'operate', visible: true } 
         ], 
         sort: {
             column: null,
@@ -151,9 +152,15 @@
         tableEl = document.getElementById('dataTable');
         const tr = tableEl.tHead.children[0];
         for (const key of tableData.keys.filter(item => item.visible)) {
-            tr.insertCell().outerHTML = `<th>
-            ${key.key.toUpperCase()}<button class="sort-btn ${tableData.sort.column == key.key && tableData.sort.order != null ? ' sorted': ''}" data-column="${key.key}">
-            <i class="fas ${getSortIcon(key.key)}"></i></button></th>`;
+            /// Перевірка щоб не було сортування кнопок
+            if (key.key == 'operate') {
+                tr.insertCell().outerHTML = `<th class="pr-4">${key.key.toUpperCase()}</th>`;
+            }
+            else {
+                tr.insertCell().outerHTML = `<th class="pr-4">
+                ${key.key.toUpperCase()}<button class="sort-btn ${tableData.sort.column == key.key && tableData.sort.order != null ? ' sorted': ''}" data-column="${key.key}">
+                <i class="fas ${getSortIcon(key.key)}"></i></button></th>`;
+            }
         }
         document.querySelectorAll('.sort-btn').forEach(function(element) {
             element.addEventListener('click', setSortData);
@@ -212,8 +219,14 @@
             const newRow = tableEl.getElementsByTagName('tbody')[0].insertRow();
             for (const key of visibleColumns) {
                 const newCell = newRow.insertCell();
-                const newText = document.createTextNode(dataArr[i][key.key]);
-                newCell.appendChild(newText);
+                /// Заповнення кнопок
+                if (key.key == 'operate') {
+                    newCell.innerHTML = `<button type="button" class="btn btn-secondary mr-2" value="${dataArr[i]['id']}">Edit</button><button type="button" class="btn btn-danger" value="${dataArr[i]['id']}">Delete</button>`;
+                } 
+                else {
+                    const newText = document.createTextNode(dataArr[i][key.key]);
+                    newCell.appendChild(newText);
+                }
             }
         }
     }
@@ -233,7 +246,7 @@
     
     function addNewUser() {
         const user = {id:'', firstName:'', lastName:'', createdDate:'', position:''};
-        user.id = data.length + 1;
+        user.id = Date.now();
         user.firstName = document.getElementById("firstName").value;
         user.lastName = document.getElementById("lastName").value;
         const currentDate = new Date();
@@ -241,9 +254,88 @@
         user.position = document.getElementById("position").value;
         data.push(user);
         tableData.getData();
+        alert('User was successfully added.', 'alert-success');
         refreshTable();
     }
-    
+
+    // Alert
+    function alert(message, context, timeremove = 3000) {
+        let alert = document.createElement('div');
+        alert.classList.add('alert');
+        alert.classList.add(context);
+        alert.classList.add('custom-alert');
+        alert.innerHTML = message;
+        document.querySelector('body').appendChild(alert);
+        setTimeout(function () { deleteAlert(alert) }, timeremove);
+    }
+
+    function deleteAlert(alert) {
+        alert.remove();
+    }
+
+    // Dropdown Filter
+    document.querySelector('.dropdown-toggle').addEventListener('click', displayFilter);
+    document.getElementById('check-all-btn').addEventListener('click', checkAllFilters);
+    document.getElementById('check-none-btn').addEventListener('click', checkNoneFilters);
+    document.getElementById('start-filter-btn').addEventListener('click', filterColumns);
+    document.querySelector('.dropdown-filter').addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+    document.addEventListener('click', () => {
+        const container = document.querySelector('.dropdown-filter');
+        if (container.classList.contains('show')) {
+            container.classList.remove('show');
+        }
+    });
+
+    function displayFilter(event) {
+        event.stopPropagation();
+        populateFilters();
+        document.querySelector('.dropdown-filter').classList.toggle('show');
+    }
+
+    function checkAllFilters() {
+        document.querySelectorAll('.filter-check').forEach(function(element) {
+            element.checked = true;
+        });
+    }
+
+    function checkNoneFilters() {
+        document.querySelectorAll('.filter-check').forEach(function(element) {
+            element.checked = false;
+        });
+    }
+
+    function filterColumns() {
+        document.querySelectorAll('.filter-check').forEach(function(element) {
+            const column = tableData.keys.find(el => el.key == element.value);
+            column.visible = element.checked;
+        });
+        hideFilter();
+        recreateTable();
+    }
+
+    function hideFilter() {
+        document.querySelector('.dropdown-filter').classList.remove('show');
+    }
+
+    function populateFilters() {
+        tableData.keys.forEach(function(element) {
+            document.querySelector(`input[value="${element.key}"]`).checked = element.visible;
+        });
+    }
+
+    function recreateTable() {
+        deleteTable();
+        createTable();
+        populateTable();
+    }
+
+    function deleteTable() {
+        tableEl.remove();
+    }
+
+    // Modal
     document.querySelectorAll('[data-save="modal"]').forEach(function(element) {
         element.addEventListener('click', (event) => {
             addNewUser();
@@ -251,7 +343,6 @@
         });
     })
 
-    // Modal
     document.querySelectorAll('[data-toggle="modal"]').forEach(function(element) {
         element.addEventListener('click', showModal);
     })
