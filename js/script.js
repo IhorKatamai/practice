@@ -96,10 +96,15 @@
         currentPage: 1,
         getData() {
             let _data;
+            const {column, order} = this.sort;
             if (this.sort.order != null) {
-                _data = data.slice().sort(sortByColumnAndOrder(this.sort.column, this.sort.order));
-            }
-            else {
+                _data = data.slice().sort((firstUser, secondUser) => {
+                    if (order === 'asc') {
+                        return firstUser[column] > secondUser[column] ? 1 : -1;
+                    }
+                    return firstUser[column] < secondUser[column] ? 1 : -1;
+                });
+            } else {
                 _data = data.slice();
             }
             return _data.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
@@ -115,14 +120,7 @@
     
     document.querySelectorAll('.page-item').forEach(function(element) {
         element.addEventListener('click', setPage);
-    })
-
-    function sortByColumnAndOrder(column, order) {
-        if (order == 'asc') {
-            return (a, b) => a[column] > b[column] ? 1 : -1;
-        }
-        return (a, b) => a[column] < b[column] ? 1 : -1;
-    }
+    });
 
     function setPage() {
         tableData.currentPage = this.dataset.page;
@@ -152,10 +150,9 @@
         tableEl = document.getElementById('dataTable');
         const tr = tableEl.tHead.children[0];
         for (const key of tableData.keys.filter(item => item.visible)) {
-            if (key.key == 'operate') {
+            if (key.key === 'operate') {
                 tr.insertCell().outerHTML = `<th class="pr-4">${key.key.toUpperCase()}</th>`;
-            }
-            else {
+            } else {
                 tr.insertCell().outerHTML = `<th class="pr-4">
                 ${key.key.toUpperCase()}<button class="sort-btn ${tableData.sort.column == key.key && tableData.sort.order != null ? ' sorted': ''}" data-column="${key.key}">
                 <i class="fas ${getSortIcon(key.key)}"></i></button></th>`;
@@ -169,7 +166,7 @@
     function refreshHeader() {
         document.querySelectorAll('.sort-btn').forEach(function(element) {
             element.classList.remove('sorted');
-            if (tableData.sort.column == element.dataset.column && tableData.sort.order != null) {
+            if (tableData.sort.column === element.dataset.column && tableData.sort.order != null) {
                 element.classList.add('sorted');
             }
             element.innerHTML = `<i class="fas ${getSortIcon(element.dataset.column)}"></i>`;
@@ -177,14 +174,12 @@
     }
 
     function getSortIcon(column) {
-        if (column == tableData.sort.column) {
-            if (tableData.sort.order == null) {
+        if (column === tableData.sort.column) {
+            if (tableData.sort.order === null) {
                 return 'fa-arrows-alt-v';
-            } else
-            if (tableData.sort.order == 'desc') {
+            } else if (tableData.sort.order === 'desc') {
                 return 'fa-sort-alpha-up';
-            } else
-            if (tableData.sort.order == 'asc') {
+            } else if (tableData.sort.order === 'asc') {
                 return 'fa-sort-alpha-down';
             }
         }
@@ -192,18 +187,17 @@
     }
 
     function setSortData() {
-        if (tableData.sort.column == this.dataset.column) {
-            if (tableData.sort.order == null) {
+        /// Destructuring
+        const {column, order} = tableData.sort;
+        if (column === this.dataset.column) {
+            if (order === null) {
                 tableData.sort.order = 'asc';
-            } else
-            if (tableData.sort.order == 'asc') {
+            } else if (order === 'asc') {
                 tableData.sort.order = 'desc';
-            } else
-            if (tableData.sort.order == 'desc') {
+            } else if (order === 'desc') {
                 tableData.sort.order = null;
             }
-        } 
-        else {
+        } else {
             tableData.sort.order = 'asc';
         }
         tableData.sort.column = this.dataset.column;
@@ -218,10 +212,9 @@
             const newRow = tableEl.getElementsByTagName('tbody')[0].insertRow();
             for (const key of visibleColumns) {
                 const newCell = newRow.insertCell();
-                if (key.key == 'operate') {
+                if (key.key === 'operate') {
                     newCell.innerHTML = `<button type="button" class="btn btn-secondary mr-2" value="${dataArr[i]['id']}">Edit</button><button type="button" class="btn btn-danger" value="${dataArr[i]['id']}">Delete</button>`;
-                } 
-                else {
+                } else {
                     const newText = document.createTextNode(dataArr[i][key.key]);
                     newCell.appendChild(newText);
                 }
@@ -240,35 +233,6 @@
         document.querySelector('.pagination-wrap').remove();
         createPagination();
         populateTable();
-    }
-    
-    function addNewUser() {
-        const user = {id:'', firstName:'', lastName:'', createdDate:'', position:''};
-        user.id = Date.now();
-        user.firstName = document.getElementById("firstName").value;
-        user.lastName = document.getElementById("lastName").value;
-        const currentDate = new Date();
-        user.createdDate = `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear().toString().slice(-2)}`;
-        user.position = document.getElementById("position").value;
-        data.push(user);
-        tableData.getData();
-        alert('User was successfully added.', 'alert-success');
-        refreshTable();
-    }
-
-    // Alert
-    function alert(message, context, timeremove = 3000) {
-        let alert = document.createElement('div');
-        alert.classList.add('alert');
-        alert.classList.add(context);
-        alert.classList.add('custom-alert');
-        alert.innerHTML = message;
-        document.querySelector('body').appendChild(alert);
-        setTimeout(function () { deleteAlert(alert) }, timeremove);
-    }
-
-    function deleteAlert(alert) {
-        alert.remove();
     }
 
     // Dropdown Filter
@@ -333,6 +297,43 @@
         tableEl.remove();
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    function showAddNewUserModal() {
+
+    }
+
+    // Add New User
+    function addNewUser() {
+        const user = {id:'', firstName:'', lastName:'', createdDate:'', position:''};
+        user.id = Date.now();
+        user.firstName = document.getElementById("firstName").value;
+        user.lastName = document.getElementById("lastName").value;
+        const currentDate = new Date();
+        user.createdDate = `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear().toString().slice(-2)}`;
+        user.position = document.getElementById("position").value;
+        data.push(user);
+        tableData.getData();
+        alert('User was successfully added.', 'alert-success');
+        refreshTable();
+    }
+
+    // Alert
+    // For each context I must change my css file (ex. danger)
+    function alert(message, context, timeremove = 3000) {
+        let alert = document.createElement('div');
+        alert.classList.add('alert');
+        alert.classList.add(context);
+        alert.classList.add('custom-alert');
+        alert.innerHTML = message;
+        document.querySelector('body').appendChild(alert);
+        setTimeout(function () { deleteAlert(alert) }, timeremove);
+    }
+
+    function deleteAlert(alert) {
+        alert.remove();
+    }
+
     // Modal
     document.querySelectorAll('[data-save="modal"]').forEach(function(element) {
         element.addEventListener('click', (event) => {
@@ -356,7 +357,7 @@
     function showModal() {
         document.querySelector(this.dataset.target).style.display = 'block';
         document.onkeydown = function(event) {
-            if(event.keyCode == 27) {
+            if(event.keyCode === 27) {
                 hideModal(document.querySelector('.modal'));
             }
         }
