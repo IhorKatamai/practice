@@ -482,10 +482,9 @@
             alert('User was successfully edited.', 'alert-success');
             refreshTable();
             return true;
-        } else {
-            alert('Please, fill out all fields.', 'alert-danger');
-            return false;
         }
+        alert('Please, fill out all fields.', 'alert-danger');
+        return false;
     }
 
     function deleteUser(indicator) {
@@ -510,21 +509,16 @@
             alert('User was successfully added.', 'alert-success');
             refreshTable();
             return true;
-        } else {
-            alert('Please, fill out all fields.', 'alert-danger');
-            return false;
         }
+        alert('Please, fill out all fields.', 'alert-danger');
+        return false;
     }
 
     function validateFields() {
         const firstName = document.getElementById("firstName").value;
         const lastName = document.getElementById("lastName").value;
         const position = document.getElementById("position").value;
-        if (firstName === '' || lastName === '' || position === '') {
-            return false;
-        } else {
-            return true;
-        }
+        return !(firstName === '' || lastName === '' || position === '');
     }
     
     function alert(message, context, timeremove = 3000) {
