@@ -1,12 +1,16 @@
 .modal {
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(75, 75, 75, 0.4);
+}
+
+.modal.custom-modal {
+    display: block;
 }
 
 .page-size-select {
     width: 75px;
 }
 
-.my-custom-table {
+.custom-table {
     position: relative;
     width: 65%;
     padding: 20px;
@@ -66,6 +70,10 @@ th {
     width: 840px;
     animation-name: slide;
     animation-duration: 1s;
+}
+
+.alert.alert-danger.custom-alert {
+    z-index: 1060;
 }
 
 @keyframes slide {

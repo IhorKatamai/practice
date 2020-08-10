@@ -1,102 +1,104 @@
-(()=>{
+(() => {
     const data = [
-    {
-        id: 1596541016200,
-        firstName: 'Petro',
-        lastName: 'Boyko',
-        createdDate: '10/20/20',
-        position: 'HR'
-    },
-    {
-        id: 1596541016202,
-        firstName: 'Julia',
-        lastName: 'Kornuta',
-        createdDate: '1/1/20',
-        position: 'Back-end Developer'
-    },
-    {
-        id: 1596541016205,
-        firstName: 'Eduard',
-        lastName: 'Sobotnyk',
-        createdDate: '5/15/20',
-        position: 'Full Stack Developer'
-    },
-    {
-        id: 1596541016209,
-        firstName: 'Ihor',
-        lastName: 'Shynkarchuk',
-        createdDate: '2/2/20',
-        position: 'Front-end Developer'
-    },
-    {
-        id: 1596541016214,
-        firstName: 'Volodia',
-        lastName: 'Torkoniak',
-        createdDate: '3/3/20',
-        position: 'Back-end Developer'
-    },
-    {
-        id: 1596541016220,
-        firstName: 'Olia',
-        lastName: 'Yakubiak',
-        createdDate: '9/9/20',
-        position: 'Full Stack Developer'
-    },
-    {
-        id: 1596541016227,
-        firstName: 'Mykhailo',
-        lastName: 'Shevchenko',
-        createdDate: '10/10/20',
-        position: 'HR'
-    },
-    {
-        id: 1596541016235,
-        firstName: 'Vasyl',
-        lastName: 'Soloveiko',
-        createdDate: '1/1/20',
-        position: 'Back-end Developer'
-    },
-    {
-        id: 1596541016249,
-        firstName: 'Artem',
-        lastName: 'Bilyi',
-        createdDate: '5/15/20',
-        position: 'Full Stack Developer'
-    },
-    {
-        id: 1596541016259,
-        firstName: 'Dmytro',
-        lastName: 'Honta',
-        createdDate: '1/11/20',
-        position: 'Back-end Developer'
-    },
-    {
-        id: 1596541016270,
-        firstName: 'Ivan',
-        lastName: 'Sirko',
-        createdDate: '5/15/20',
-        position: 'Full Stack Developer'
-    },
+        {
+            id: 1596541016200,
+            firstName: 'Petro',
+            lastName: 'Boyko',
+            createdDate: '10/20/20',
+            position: 'HR'
+        },
+        {
+            id: 1596541016202,
+            firstName: 'Julia',
+            lastName: 'Kornuta',
+            createdDate: '1/1/20',
+            position: 'Back-end Developer'
+        },
+        {
+            id: 1596541016205,
+            firstName: 'Eduard',
+            lastName: 'Sobotnyk',
+            createdDate: '5/15/20',
+            position: 'Full Stack Developer'
+        },
+        {
+            id: 1596541016209,
+            firstName: 'Ihor',
+            lastName: 'Shynkarchuk',
+            createdDate: '2/2/20',
+            position: 'Front-end Developer'
+        },
+        {
+            id: 1596541016214,
+            firstName: 'Volodia',
+            lastName: 'Torkoniak',
+            createdDate: '3/3/20',
+            position: 'Back-end Developer'
+        },
+        {
+            id: 1596541016220,
+            firstName: 'Olia',
+            lastName: 'Yakubiak',
+            createdDate: '9/9/20',
+            position: 'Full Stack Developer'
+        },
+        {
+            id: 1596541016227,
+            firstName: 'Mykhailo',
+            lastName: 'Shevchenko',
+            createdDate: '10/10/20',
+            position: 'HR'
+        },
+        {
+            id: 1596541016235,
+            firstName: 'Vasyl',
+            lastName: 'Soloveiko',
+            createdDate: '1/1/20',
+            position: 'Back-end Developer'
+        },
+        {
+            id: 1596541016249,
+            firstName: 'Artem',
+            lastName: 'Bilyi',
+            createdDate: '5/15/20',
+            position: 'Full Stack Developer'
+        },
+        {
+            id: 1596541016259,
+            firstName: 'Dmytro',
+            lastName: 'Honta',
+            createdDate: '1/11/20',
+            position: 'Back-end Developer'
+        },
+        {
+            id: 1596541016270,
+            firstName: 'Ivan',
+            lastName: 'Sirko',
+            createdDate: '5/15/20',
+            position: 'Full Stack Developer'
+        },
     ];
 
-    const tableData = { 
+    const tableData = {
         keys: [
-        { key: 'id', visible: true }, 
-        { key: 'firstName', visible: true }, 
-        { key: 'lastName', visible: true }, 
-        { key: 'createdDate', visible: true }, 
-        { key: 'position', visible: true },
-        { key: 'operate', visible: true } 
-        ], 
+            { key: 'id', visible: true },
+            // should be true
+            { key: 'firstName', visible: false },
+            { key: 'lastName', visible: true },
+            { key: 'createdDate', visible: true },
+            { key: 'position', visible: true },
+            { key: 'operate', visible: true }
+        ],
         sort: {
             column: null,
             order: null
         },
-        pageSize: 5, 
+        // should be 5
+        pageSize: 3,
         currentPage: 1,
         getData() {
             let _data;
-            const {column, order} = this.sort;
+            const { column, order } = this.sort;
             if (this.sort.order != null) {
                 _data = data.slice().sort((firstUser, secondUser) => {
                     if (order === 'asc') {
@@ -110,15 +112,15 @@
             return _data.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
         }
     };
-    
+
     const tableWrap = document.getElementById('table-wrap');
     let tableEl;
     createPagination();
     createTable();
     populateTable();
     document.querySelector('.custom-select').onchange = changePageSize;
-    
-    document.querySelectorAll('.page-item').forEach(function(element) {
+
+    document.querySelectorAll('.page-item').forEach(function (element) {
         element.addEventListener('click', setPage);
     });
 
@@ -126,27 +128,27 @@
         tableData.currentPage = this.dataset.page;
         refreshTable();
     }
-    
+
     function createPagination() {
         tableWrap.insertAdjacentHTML('afterend', '<nav aria-label="..." class="pagination-wrap"><ul class="pagination"></ul></nav>');
         let pagination = document.querySelector('.pagination-wrap');
         let pagesHTML = '';
         const numberOfPages = caclNumberOfPages();
         for (let i = 1; i <= numberOfPages; i++) {
-            pagesHTML += `<li class="page-item ${tableData.currentPage == i ? 'disabled': ''}" data-page="${i}"><a class="page-link" href="#">${i}</a></li>`;
+            pagesHTML += `<li class="page-item ${tableData.currentPage == i ? 'disabled' : ''}" data-page="${i}"><a class="page-link" href="#">${i}</a></li>`;
         }
         pagination.children[0].innerHTML = pagesHTML;
-        document.querySelectorAll('.page-item').forEach(function(element) {
+        document.querySelectorAll('.page-item').forEach(function (element) {
             element.addEventListener('click', setPage);
         })
     }
-    
+
     function caclNumberOfPages() {
-        return Math.ceil(data.length/tableData.pageSize);
+        return Math.ceil(data.length / tableData.pageSize);
     }
-    
+
     function createTable() {
-        document.querySelector('#table-wrap').innerHTML='<table id="dataTable" class="table table-bordered mt-3"><thead><tr></tr></thead><tbody></tbody></table>';
+        document.querySelector('#table-wrap').innerHTML = '<table id="dataTable" class="table table-bordered mt-3"><thead><tr></tr></thead><tbody></tbody></table>';
         tableEl = document.getElementById('dataTable');
         const tr = tableEl.tHead.children[0];
         for (const key of tableData.keys.filter(item => item.visible)) {
@@ -154,17 +156,17 @@
                 tr.insertCell().outerHTML = `<th class="pr-4">${key.key.toUpperCase()}</th>`;
             } else {
                 tr.insertCell().outerHTML = `<th class="pr-4">
-                ${key.key.toUpperCase()}<button class="sort-btn ${tableData.sort.column == key.key && tableData.sort.order != null ? ' sorted': ''}" data-column="${key.key}">
+                ${key.key.toUpperCase()}<button class="sort-btn ${tableData.sort.column == key.key && tableData.sort.order != null ? ' sorted' : ''}" data-column="${key.key}">
                 <i class="fas ${getSortIcon(key.key)}"></i></button></th>`;
             }
         }
-        document.querySelectorAll('.sort-btn').forEach(function(element) {
+        document.querySelectorAll('.sort-btn').forEach(function (element) {
             element.addEventListener('click', setSortData);
         });
     }
 
     function refreshHeader() {
-        document.querySelectorAll('.sort-btn').forEach(function(element) {
+        document.querySelectorAll('.sort-btn').forEach(function (element) {
             element.classList.remove('sorted');
             if (tableData.sort.column === element.dataset.column && tableData.sort.order != null) {
                 element.classList.add('sorted');
@@ -187,8 +189,7 @@
     }
 
     function setSortData() {
-        /// Destructuring
-        const {column, order} = tableData.sort;
+        const { column, order } = tableData.sort;
         if (column === this.dataset.column) {
             if (order === null) {
                 tableData.sort.order = 'asc';
@@ -204,7 +205,7 @@
         refreshHeader();
         refreshTable();
     }
-    
+
     function populateTable() {
         const dataArr = tableData.getData();
         const visibleColumns = tableData.keys.filter(item => item.visible);
@@ -213,21 +214,33 @@
             for (const key of visibleColumns) {
                 const newCell = newRow.insertCell();
                 if (key.key === 'operate') {
-                    newCell.innerHTML = `<button type="button" class="btn btn-secondary mr-2" value="${dataArr[i]['id']}">Edit</button><button type="button" class="btn btn-danger" value="${dataArr[i]['id']}">Delete</button>`;
+                    newCell.innerHTML = `<button type="button" class="btn btn-secondary btn-edit-user-modal mr-2" value="${dataArr[i]['id']}">Edit</button><button type="button" class="btn btn-danger btn-delete-user-modal" value="${dataArr[i]['id']}">Delete</button>`;
                 } else {
                     const newText = document.createTextNode(dataArr[i][key.key]);
                     newCell.appendChild(newText);
                 }
             }
         }
+        /// Виклик редагування юзера
+        document.querySelectorAll('.btn-edit-user-modal').forEach(function (element) {
+            element.addEventListener('click', (event) => {
+                createNewModal('.btn-edit-user-modal', element.value);
+            });
+        });
+        /// Виклик видалення юзера
+        document.querySelectorAll('.btn-delete-user-modal').forEach(function (element) {
+            element.addEventListener('click', (event) => {
+                createNewModal('.btn-delete-user-modal', element.value);
+            });
+        });
     }
-    
+
     function changePageSize() {
         tableData.pageSize = this.value;
         tableData.currentPage = 1;
         refreshTable();
     }
-    
+
     function refreshTable() {
         tableEl.getElementsByTagName('tbody')[0].innerHTML = '';
         document.querySelector('.pagination-wrap').remove();
@@ -257,19 +270,19 @@
     }
 
     function checkAllFilters() {
-        document.querySelectorAll('.filter-check').forEach(function(element) {
+        document.querySelectorAll('.filter-check').forEach(function (element) {
             element.checked = true;
         });
     }
 
     function checkNoneFilters() {
-        document.querySelectorAll('.filter-check').forEach(function(element) {
+        document.querySelectorAll('.filter-check').forEach(function (element) {
             element.checked = false;
         });
     }
 
     function filterColumns() {
-        document.querySelectorAll('.filter-check').forEach(function(element) {
+        document.querySelectorAll('.filter-check').forEach(function (element) {
             const column = tableData.keys.find(el => el.key == element.value);
             column.visible = element.checked;
         });
@@ -282,7 +295,7 @@
     }
 
     function populateFilters() {
-        tableData.keys.forEach(function(element) {
+        tableData.keys.forEach(function (element) {
             document.querySelector(`input[value="${element.key}"]`).checked = element.visible;
         });
     }
@@ -299,25 +312,126 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    function showAddNewUserModal() {
+    // Виклик вікна додавання юзера
+    document.querySelector('.btn-show-add-user-modal').addEventListener('click', (event) => {
+        createNewModal('.btn-show-add-user-modal');
+    });
 
+    function createNewModal(btn, id) {
+        if (btn === '.btn-show-add-user-modal') {
+            document.querySelector('body').insertAdjacentHTML('afterBegin', '<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-dialog-centered" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalTitle">Add New User</h5><button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">First Name</span></div><input id="firstName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default"></div><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">Last Name</span></div><input id="lastName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default"></div><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">Position</span></div><input id="position" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary btn-close">Close</button><button type="button" class="btn btn-success btn-add-user">Save changes</button></div></div></div></div>');
+            document.querySelector('.btn-add-user').addEventListener('click', (event) => {
+                if (addNewUser()) {
+                    removeModal();
+                }
+            });
+        } else if (btn === '.btn-edit-user-modal') {
+            document.querySelector('body').insertAdjacentHTML('afterBegin', '<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-dialog-centered" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalTitle">Edit User</h5><button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">First Name</span></div><input id="firstName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default"></div><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">Last Name</span></div><input id="lastName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default"></div><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">Position</span></div><input id="position" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary btn-close">Close</button><button type="button" class="btn btn-success btn-edit-user">Save changes</button></div></div></div></div>');
+            fillFields(id);
+            document.querySelector('.btn-edit-user').addEventListener('click', (event) => {
+                if (editUser(id)) {
+                    removeModal();
+                }
+            });
+        } else if (btn === '.btn-delete-user-modal') {
+            document.querySelector('body').insertAdjacentHTML('afterBegin', '<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-dialog-centered" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalTitle">Delete User</h5><button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><p>Are you sure you want to delete this user?</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary btn-close">Close</button><button type="button" class="btn btn-danger btn-delete-user">Delete</button></div></div></div></div>');
+            document.querySelector('.btn-delete-user').addEventListener('click', (event) => {
+                deleteUser(id);
+                removeModal();
+            });
+        }
+        // Щоб закривалось на "ESC"
+        document.onkeydown = function (event) {
+            if (event.keyCode === 27) {
+                removeModal();
+            }
+        };
+        // Щоб на будь яку кнопку "закрити" воно закривалось
+        document.querySelectorAll('.btn-close').forEach(function (element) {
+            element.addEventListener('click', removeModal);
+        });
+        // Щоб при кліку мимо вікна воно закривалось
+        document.querySelectorAll('.modal').forEach(function (element) {
+            element.addEventListener('click', removeModal);
+        });
+        // Щоб при кліку на саме вікно воно не закривалось
+        document.querySelectorAll('.modal-content').forEach(function (element) {
+            element.addEventListener('click', (event) => {
+                event.stopPropagation();
+            });
+        });
     }
 
-    // Add New User
-    function addNewUser() {
-        const user = {id:'', firstName:'', lastName:'', createdDate:'', position:''};
-        user.id = Date.now();
-        user.firstName = document.getElementById("firstName").value;
-        user.lastName = document.getElementById("lastName").value;
-        const currentDate = new Date();
-        user.createdDate = `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear().toString().slice(-2)}`;
-        user.position = document.getElementById("position").value;
-        data.push(user);
+    function removeModal() {
+        document.querySelector('.modal').remove();
+        document.onkeydown = null;
+    }
+
+    // Fill fields before editing
+    function fillFields(indicator) {
+        const { firstName, lastName, position }  = data.find(el => el.id == indicator);
+        document.getElementById("firstName").value = firstName;
+        document.getElementById("lastName").value = lastName;
+        document.getElementById("position").value = position;
+    }
+
+    // Edit user
+    function editUser(indicator) {
+        if (validateFields()) {
+            const user  = data.find(el => el.id == indicator);
+            user.firstName = document.getElementById("firstName").value;
+            user.lastName = document.getElementById("lastName").value;
+            user.position = document.getElementById("position").value;
+            tableData.getData();
+            alert('User was successfully edited.', 'alert-success');
+            refreshTable();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Delete user
+    function deleteUser(indicator) {
+        const index = data.indexOf(data.find(el => el.id == indicator));
+        data.splice(index, 1);
         tableData.getData();
-        alert('User was successfully added.', 'alert-success');
+        alert('User was successfully deleted.', 'alert-success');
         refreshTable();
     }
 
+    // Add New User
+    // Треба перевірку валідності даних зробити
+    function addNewUser() {
+        if (validateFields()) {
+            const user = { id: '', firstName: '', lastName: '', createdDate: '', position: '' };
+            user.id = Date.now();
+            user.firstName = document.getElementById("firstName").value;
+            user.lastName = document.getElementById("lastName").value;
+            const currentDate = new Date();
+            user.createdDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear().toString().slice(-2)}`;
+            user.position = document.getElementById("position").value;
+            data.push(user);
+            tableData.getData();
+            alert('User was successfully added.', 'alert-success');
+            refreshTable();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function validateFields() {
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
+        const position = document.getElementById("position").value;
+        if (firstName === '' || lastName === '' || position === '') {
+            alert('Please, fill out all fields.', 'alert-danger');
+            return false;
+        } else {
+            return true;
+        }
+    }
     // Alert
     // For each context I must change my css file (ex. danger)
     function alert(message, context, timeremove = 3000) {
@@ -333,44 +447,4 @@
     function deleteAlert(alert) {
         alert.remove();
     }
-
-    // Modal
-    document.querySelectorAll('[data-save="modal"]').forEach(function(element) {
-        element.addEventListener('click', (event) => {
-            addNewUser();
-            hideModal(event.target);
-        });
-    })
-
-    document.querySelectorAll('[data-toggle="modal"]').forEach(function(element) {
-        element.addEventListener('click', showModal);
-    })
-
-    document.querySelectorAll('[data-dismiss="modal"]').forEach(function(element) {
-        element.addEventListener('click', (event) => hideModal(event.target));
-    })
-
-    document.querySelectorAll('.modal').forEach(function(element) {
-        element.addEventListener('click', (event) => hideModal(event.target));
-    })
-
-    function showModal() {
-        document.querySelector(this.dataset.target).style.display = 'block';
-        document.onkeydown = function(event) {
-            if(event.keyCode === 27) {
-                hideModal(document.querySelector('.modal'));
-            }
-        }
-    }
-
-    function hideModal(element) {
-        element.closest('.modal').style.display = 'none';
-        document.onkeydown = null;
-    }
-
-    document.querySelectorAll('.modal-content').forEach(function(element) {
-        element.onclick = function(event) {
-            event.stopPropagation();
-        }
-    })
 })();
