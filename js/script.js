@@ -82,8 +82,7 @@
     const tableData = {
         keys: [
             { key: 'id', visible: true },
-            // should be true
-            { key: 'firstName', visible: false },
+            { key: 'firstName', visible: true },
             { key: 'lastName', visible: true },
             { key: 'createdDate', visible: true },
             { key: 'position', visible: true },
@@ -93,8 +92,7 @@
             column: null,
             order: null
         },
-        // should be 5
-        pageSize: 3,
+        pageSize: 5,
         currentPage: 1,
         getData() {
             let _data;
