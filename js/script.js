@@ -77,6 +77,20 @@
             createdDate: '5/15/20',
             position: 'Full Stack Developer'
         },
+        {
+            id: 1596541016276,
+            firstName: 'Bogdan',
+            lastName: 'Tychyna',
+            createdDate: '7/12/20',
+            position: 'HR'
+        },
+        {
+            id: 1596541016290,
+            firstName: 'Pavlo',
+            lastName: 'Koval',
+            createdDate: '8/1/20',
+            position: 'Front-end Developer'
+        },
     ];
 
     const tableData = {
