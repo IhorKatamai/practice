@@ -119,15 +119,9 @@
     createTable();
     populateTable();
     document.querySelector('.custom-select').onchange = changePageSize;
-
     document.querySelectorAll('.page-item').forEach(function (element) {
         element.addEventListener('click', setPage);
     });
-
-    function setPage() {
-        tableData.currentPage = this.dataset.page;
-        refreshTable();
-    }
 
     function createPagination() {
         tableWrap.insertAdjacentHTML('afterend', '<nav aria-label="..." class="pagination-wrap"><ul class="pagination"></ul></nav>');
@@ -140,11 +134,16 @@
         pagination.children[0].innerHTML = pagesHTML;
         document.querySelectorAll('.page-item').forEach(function (element) {
             element.addEventListener('click', setPage);
-        })
+        });
     }
 
     function caclNumberOfPages() {
         return Math.ceil(data.length / tableData.pageSize);
+    }
+
+    function setPage() {
+        tableData.currentPage = this.dataset.page;
+        refreshTable();
     }
 
     function createTable() {
@@ -162,16 +161,6 @@
         }
         document.querySelectorAll('.sort-btn').forEach(function (element) {
             element.addEventListener('click', setSortData);
-        });
-    }
-
-    function refreshHeader() {
-        document.querySelectorAll('.sort-btn').forEach(function (element) {
-            element.classList.remove('sorted');
-            if (tableData.sort.column === element.dataset.column && tableData.sort.order != null) {
-                element.classList.add('sorted');
-            }
-            element.innerHTML = `<i class="fas ${getSortIcon(element.dataset.column)}"></i>`;
         });
     }
 
@@ -206,6 +195,23 @@
         refreshTable();
     }
 
+    function refreshHeader() {
+        document.querySelectorAll('.sort-btn').forEach(function (element) {
+            element.classList.remove('sorted');
+            if (tableData.sort.column === element.dataset.column && tableData.sort.order != null) {
+                element.classList.add('sorted');
+            }
+            element.innerHTML = `<i class="fas ${getSortIcon(element.dataset.column)}"></i>`;
+        });
+    }
+
+    function refreshTable() {
+        tableEl.getElementsByTagName('tbody')[0].innerHTML = '';
+        document.querySelector('.pagination-wrap').remove();
+        createPagination();
+        populateTable();
+    }
+
     function populateTable() {
         const dataArr = tableData.getData();
         const visibleColumns = tableData.keys.filter(item => item.visible);
@@ -221,13 +227,13 @@
                 }
             }
         }
-        /// Виклик редагування юзера
+        // Handle edit user btn click
         document.querySelectorAll('.btn-edit-user-modal').forEach(function (element) {
             element.addEventListener('click', (event) => {
                 createNewModal('.btn-edit-user-modal', element.value);
             });
         });
-        /// Виклик видалення юзера
+        // Handle delete user btn click
         document.querySelectorAll('.btn-delete-user-modal').forEach(function (element) {
             element.addEventListener('click', (event) => {
                 createNewModal('.btn-delete-user-modal', element.value);
@@ -239,13 +245,6 @@
         tableData.pageSize = this.value;
         tableData.currentPage = 1;
         refreshTable();
-    }
-
-    function refreshTable() {
-        tableEl.getElementsByTagName('tbody')[0].innerHTML = '';
-        document.querySelector('.pagination-wrap').remove();
-        createPagination();
-        populateTable();
     }
 
     // Dropdown Filter
@@ -309,52 +308,150 @@
     function deleteTable() {
         tableEl.remove();
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    // Виклик вікна додавання юзера
+    // Handle add user btn click
     document.querySelector('.btn-show-add-user-modal').addEventListener('click', (event) => {
         createNewModal('.btn-show-add-user-modal');
     });
 
+    const modalAddUser = 
+    `<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Add New User</h5>
+                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">First Name</span>
+                        </div>
+                        <input id="firstName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default" maxlength="30">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Last Name</span>
+                        </div>
+                        <input id="lastName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default" maxlength="30">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Position</span>
+                        </div>
+                        <input id="position" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" maxlength="30">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-close">Close</button>
+                    <button type="button" class="btn btn-success btn-add-user">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+    const modalEditUser = 
+    `<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Edit User</h5>
+                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">First Name</span>
+                        </div>
+                        <input id="firstName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default" maxlength="30">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Last Name</span>
+                        </div>
+                        <input id="lastName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default" maxlength="30">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Position</span>
+                        </div>
+                        <input id="position" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" maxlength="30">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-close">Close</button>
+                    <button type="button" class="btn btn-success btn-edit-user">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+    const modalDeleteUser = 
+    `<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content"><div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Delete User</h5>
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this user?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-close">Close</button>
+                <button type="button" class="btn btn-danger btn-delete-user">Delete</button>
+            </div>
+        </div>
+    </div>`;
+
     function createNewModal(btn, id) {
-        if (btn === '.btn-show-add-user-modal') {
-            document.querySelector('body').insertAdjacentHTML('afterBegin', '<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-dialog-centered" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalTitle">Add New User</h5><button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">First Name</span></div><input id="firstName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default"></div><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">Last Name</span></div><input id="lastName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default"></div><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">Position</span></div><input id="position" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary btn-close">Close</button><button type="button" class="btn btn-success btn-add-user">Save changes</button></div></div></div></div>');
-            document.querySelector('.btn-add-user').addEventListener('click', (event) => {
-                if (addNewUser()) {
+        switch(btn) {
+            case '.btn-show-add-user-modal': {
+                document.querySelector('body').insertAdjacentHTML('afterBegin', modalAddUser);
+                document.querySelector('.btn-add-user').addEventListener('click', (event) => {
+                    if (addNewUser()) {
+                        removeModal();
+                    }
+                });
+                break;
+            }
+            case '.btn-edit-user-modal': {
+                document.querySelector('body').insertAdjacentHTML('afterBegin', modalEditUser);
+                fillFields(id);
+                document.querySelector('.btn-edit-user').addEventListener('click', (event) => {
+                    if (editUser(id)) {
+                        removeModal();
+                    }
+                });
+                break;
+            }
+            case '.btn-delete-user-modal': {
+                document.querySelector('body').insertAdjacentHTML('afterBegin', modalDeleteUser);
+                document.querySelector('.btn-delete-user').addEventListener('click', (event) => {
+                    deleteUser(id);
                     removeModal();
-                }
-            });
-        } else if (btn === '.btn-edit-user-modal') {
-            document.querySelector('body').insertAdjacentHTML('afterBegin', '<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-dialog-centered" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalTitle">Edit User</h5><button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">First Name</span></div><input id="firstName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default"></div><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">Last Name</span></div><input id="lastName" type="text" class="form-control" aria-label="Default"aria-describedby="inputGroup-sizing-default"></div><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">Position</span></div><input id="position" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary btn-close">Close</button><button type="button" class="btn btn-success btn-edit-user">Save changes</button></div></div></div></div>');
-            fillFields(id);
-            document.querySelector('.btn-edit-user').addEventListener('click', (event) => {
-                if (editUser(id)) {
-                    removeModal();
-                }
-            });
-        } else if (btn === '.btn-delete-user-modal') {
-            document.querySelector('body').insertAdjacentHTML('afterBegin', '<div class="modal custom-modal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-dialog-centered" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalTitle">Delete User</h5><button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><p>Are you sure you want to delete this user?</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary btn-close">Close</button><button type="button" class="btn btn-danger btn-delete-user">Delete</button></div></div></div></div>');
-            document.querySelector('.btn-delete-user').addEventListener('click', (event) => {
-                deleteUser(id);
-                removeModal();
-            });
+                });
+                break;
+            }
         }
-        // Щоб закривалось на "ESC"
+        // Close modal actions
         document.onkeydown = function (event) {
             if (event.keyCode === 27) {
                 removeModal();
             }
         };
-        // Щоб на будь яку кнопку "закрити" воно закривалось
         document.querySelectorAll('.btn-close').forEach(function (element) {
             element.addEventListener('click', removeModal);
         });
-        // Щоб при кліку мимо вікна воно закривалось
         document.querySelectorAll('.modal').forEach(function (element) {
             element.addEventListener('click', removeModal);
         });
-        // Щоб при кліку на саме вікно воно не закривалось
+        // Prevent close on click on modal
         document.querySelectorAll('.modal-content').forEach(function (element) {
             element.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -375,7 +472,6 @@
         document.getElementById("position").value = position;
     }
 
-    // Edit user
     function editUser(indicator) {
         if (validateFields()) {
             const user  = data.find(el => el.id == indicator);
@@ -387,11 +483,11 @@
             refreshTable();
             return true;
         } else {
+            alert('Please, fill out all fields.', 'alert-danger');
             return false;
         }
     }
 
-    // Delete user
     function deleteUser(indicator) {
         const index = data.indexOf(data.find(el => el.id == indicator));
         data.splice(index, 1);
@@ -400,8 +496,6 @@
         refreshTable();
     }
 
-    // Add New User
-    // Треба перевірку валідності даних зробити
     function addNewUser() {
         if (validateFields()) {
             const user = { id: '', firstName: '', lastName: '', createdDate: '', position: '' };
@@ -417,6 +511,7 @@
             refreshTable();
             return true;
         } else {
+            alert('Please, fill out all fields.', 'alert-danger');
             return false;
         }
     }
@@ -426,14 +521,12 @@
         const lastName = document.getElementById("lastName").value;
         const position = document.getElementById("position").value;
         if (firstName === '' || lastName === '' || position === '') {
-            alert('Please, fill out all fields.', 'alert-danger');
             return false;
         } else {
             return true;
         }
     }
-    // Alert
-    // For each context I must change my css file (ex. danger)
+    
     function alert(message, context, timeremove = 3000) {
         let alert = document.createElement('div');
         alert.classList.add('alert');
